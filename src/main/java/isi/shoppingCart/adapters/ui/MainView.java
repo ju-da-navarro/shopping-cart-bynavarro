@@ -4,9 +4,12 @@ import isi.shoppingCart.entities.CartItem;
 import isi.shoppingCart.entities.Product;
 import isi.shoppingCart.infrastructure.repositories.InMemoryCartRepository;
 import isi.shoppingCart.infrastructure.repositories.InMemoryProductRepository;
+import isi.shoppingCart.infrastructure.repositories.InMemoryPurchaseRepository;
 import isi.shoppingCart.usecases.ports.CartRepository;
 import isi.shoppingCart.usecases.ports.ProductRepository;
+import isi.shoppingCart.usecases.ports.PurchaseRepository;
 import isi.shoppingCart.usecases.services.AgregarProductoAlCarritoUseCase;
+import isi.shoppingCart.usecases.services.ConfirmarCompraUseCase;
 import isi.shoppingCart.usecases.services.ShoppingCartApp;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -27,22 +30,31 @@ public class MainView {
     private VBox catalogBox;
     private VBox cartBox;
     private Label totalLabel;
+    private Label comprasConfirmadasLabel;
 
     public MainView() {
         ProductRepository productRepository = new InMemoryProductRepository();
         CartRepository cartRepository = new InMemoryCartRepository(productRepository);
+        PurchaseRepository purchaseRepository = new InMemoryPurchaseRepository();
+        ConfirmarCompraUseCase confirmarCompraUseCase =
+                new ConfirmarCompraUseCase(purchaseRepository, cartRepository);
         AgregarProductoAlCarritoUseCase agregarProductoAlCarritoUseCase =
                 new AgregarProductoAlCarritoUseCase(productRepository, cartRepository);
+
 
         shoppingCartApp = new ShoppingCartApp(
                 productRepository,
                 cartRepository,
+                purchaseRepository,
+                confirmarCompraUseCase,
                 agregarProductoAlCarritoUseCase
+
         );
 
         catalogBox = new VBox(10);
         cartBox = new VBox(10);
         totalLabel = new Label("Total: $ 0.0");
+        comprasConfirmadasLabel = new Label("Compras Confirmadas ...");
     }
 
     public Scene createScene() {
@@ -81,10 +93,15 @@ public class MainView {
         title.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
 
         Button confirmButton = new Button("Confirmar compra");
-        confirmButton.setOnAction(event -> showMessage("Por implementar"));
+        confirmButton.setOnAction(event -> {
+            shoppingCartApp.ConfirmarCompra();
+            comprasConfirmadasLabel.setText("Compra Confirmada y en Persistencia");
+            refreshCart();
+            refreshCatalog();
+        });
 
         VBox panel = new VBox(10);
-        panel.getChildren().addAll(title, cartBox, totalLabel, confirmButton);
+        panel.getChildren().addAll(title, cartBox, totalLabel, confirmButton, comprasConfirmadasLabel);
         panel.setPrefWidth(430);
         panel.setStyle("-fx-border-color: lightgray; -fx-padding: 10;");
         return panel;
