@@ -17,8 +17,8 @@ public class ConfirmarCompraUseCase {
     public String execute() {
         Cart cart = cartRepository.getCart();
 
-        if (cart == null) {
-            return "Carrito No encontrado.";
+        if (cart.getItems().isEmpty()) {
+            return "Carrito Vacio, No Puede confirmar Compra";
         }
 
         Purchase purchase = new Purchase();
@@ -28,6 +28,6 @@ public class ConfirmarCompraUseCase {
 
         cartRepository.getCart().cleanCart();
 
-        return "";
+        return "Compra Confirmada y en persistencia";
     }
 }

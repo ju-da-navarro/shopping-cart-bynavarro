@@ -57,7 +57,9 @@ public class Cart {
 
     public void cleanCart(){
         for(CartItem p : items){
-            p.getProduct().decreaseAvailableQuantity();
+            for(int i=0 ;i<p.getQuantity(); i++){
+                p.getProduct().decreaseAvailableQuantity();
+            }
         }
         items.clear();
     }

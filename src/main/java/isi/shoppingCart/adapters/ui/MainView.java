@@ -54,7 +54,7 @@ public class MainView {
         catalogBox = new VBox(10);
         cartBox = new VBox(10);
         totalLabel = new Label("Total: $ 0.0");
-        comprasConfirmadasLabel = new Label("Compras Confirmadas ...");
+        comprasConfirmadasLabel = new Label("Esperando Confirmación Compra ...");
     }
 
     public Scene createScene() {
@@ -94,8 +94,7 @@ public class MainView {
 
         Button confirmButton = new Button("Confirmar compra");
         confirmButton.setOnAction(event -> {
-            shoppingCartApp.ConfirmarCompra();
-            comprasConfirmadasLabel.setText("Compra Confirmada y en Persistencia");
+            comprasConfirmadasLabel.setText("Resultado Confirmación: " + shoppingCartApp.ConfirmarCompra());
             refreshCart();
             refreshCatalog();
         });
