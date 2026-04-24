@@ -26,6 +26,8 @@ public class ConfirmarCompraUseCase {
         purchase.SetActive();
         purchaseRepository.save(purchase);
 
+        cartRepository.getCart().cleanCart();
+
         return "";
     }
 }

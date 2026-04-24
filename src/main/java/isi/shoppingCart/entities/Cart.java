@@ -54,4 +54,11 @@ public class Cart {
 
         return total;
     }
+
+    public void cleanCart(){
+        for(CartItem p : items){
+            p.getProduct().decreaseAvailableQuantity();
+        }
+        items.clear();
+    }
 }
